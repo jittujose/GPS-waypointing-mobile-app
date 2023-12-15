@@ -37,7 +37,7 @@ import kotlin.math.floor
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun draughtsView(game_state: MutableList<MutableList<Int>>,orientation_vector: FloatArray,onAttemptMove:(x:Int,y:Int) ->Unit){
+fun mapView(game_state: MutableList<MutableList<Int>>,orientation_vector: FloatArray,onAttemptMove:(x:Int,y:Int) ->Unit){
     var width by remember { mutableStateOf(0.0f) }
     var height by remember { mutableStateOf(0.0f) }
     var cell_width by remember { mutableStateOf(0.0f) }
@@ -66,22 +66,7 @@ fun draughtsView(game_state: MutableList<MutableList<Int>>,orientation_vector: F
         cell_height =width/11.0f
 
 
-//        for (i in 0 until 11) {
-//            for (j in 0 until 11) {
-//                var color= Color.Black
-//                if (array[i][j]==0){
-//                     color= Color.DarkGray}
-//                drawRect(
-//                    color = color,
-//                    topLeft = Offset(i * cell_width, j * cell_height),
-//                    size = androidx.compose.ui.geometry.Size(cell_width, cell_height)
-//                )
 //
-//
-//
-//            }
-//
-//        }
         // Convert to radians
         val rotationXRad = Math.toRadians(orientation_vector[0].toDouble())
         val rotationYRad = Math.toRadians(orientation_vector[1].toDouble())
@@ -91,7 +76,7 @@ fun draughtsView(game_state: MutableList<MutableList<Int>>,orientation_vector: F
             rotate(degrees = orientation_vector[1]) {
                 rotate(degrees = orientation_vector[2]) {
                     // Draw your content here, considering it will be rotated
-                    //drawCircle(color = Color.Red, center = Offset(size.width / 2, size.height / 2), radius = 50f)
+
                     // Add more drawing operations as needed
 
 

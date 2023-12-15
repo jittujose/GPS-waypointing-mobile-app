@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Column {
-                draughtsView(game_state = array, orientation_vector) { x, y ->
+                mapView(game_state = array, orientation_vector) { x, y ->
                     placePiece(x, y)
                     updateGameStatus()
                 }
