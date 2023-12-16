@@ -182,6 +182,7 @@ fun showWhyNotificationNeeded(onDismiss: () -> Unit){
             }  })
 }
 
+//Scrollable list
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun verticalList(text:String, onStateChanged: (Int) -> Unit,onLongclick:(Int) ->Unit ){
@@ -196,6 +197,7 @@ fun verticalList(text:String, onStateChanged: (Int) -> Unit,onLongclick:(Int) ->
         }
     }
 }
+//function to convert text to string array
 fun stringToArray(stringData: String): Array<String> {
     return stringData.lines().toTypedArray()
 }
