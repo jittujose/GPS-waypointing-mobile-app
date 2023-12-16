@@ -23,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import android.Manifest
+import androidx.compose.foundation.layout.Row
 
 
 class MainActivity : ComponentActivity() {
@@ -38,18 +39,26 @@ class MainActivity : ComponentActivity() {
                 Text(text = rotation.value)
                 Text(text = "${latitude.value}")
                 Text(text = "${longitude.value}")
-                Button(onClick = {
+                Row {
+                    Button(onClick = {
+                        if (started_tracking.value) {
+                            removeLocationListener()
+                        } else {
+                            addLocationListener()
+                        }
+                    }) {
+                        if (started_tracking.value) {
+                            Text(text = "Stop GPS tracking")
+                        } else {
+                            Text(text = "Start GPS tracking")
+                        }
+                    }
                     if (started_tracking.value){
-                        removeLocationListener()}
-                    else{
-                        addLocationListener()}
-                }) {
-                    if(started_tracking.value){
-                        Text(text = "Stop GPS tracking")}
-                    else{
-                        Text(text = "Start GPS tracking")}
+                        Button(onClick = { /*TODO*/ }) {
+                            Text(text = "Add Waypoint")
+                        }
+                    }
                 }
-
 
                 val permission_launcher =
                     rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestMultiplePermissions()) {
