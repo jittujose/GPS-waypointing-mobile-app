@@ -24,12 +24,23 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import android.Manifest
 import androidx.compose.foundation.layout.Row
+import kotlinx.coroutines.flow.internal.NoOpContinuation.context
+import java.io.BufferedReader
+
+import java.io.FileReader
+import java.io.FileWriter
+import java.io.BufferedWriter
+import java.io.File
+import java.io.IOException
+import java.lang.StringBuilder
+import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+         text.value= readFile()
         setContent {
             Column {
                 mapView(game_state = array, orientation_vector) { x, y ->
@@ -54,11 +65,17 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                     if (started_tracking.value){
-                        Button(onClick = { /*TODO*/ }) {
+                        Button(onClick = {
+                            content.value = "Nee kollamalloda"
+                            writeFile(content.value)
+                            text.value= readFile()
+
+                        }) {
                             Text(text = "Add Waypoint")
                         }
                     }
                 }
+                Text(text = "${text.value}")
 
                 val permission_launcher =
                     rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestMultiplePermissions()) {
@@ -82,6 +99,9 @@ class MainActivity : ComponentActivity() {
 
             }
         }
+
+
+
 
         var sm:SensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         if (sm.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR) != null)
@@ -155,5 +175,41 @@ val array = MutableList(1000) {
     MutableList(1000) { 0 }
 }
 
+//File
+private fun readFile(): String {
+    var to_read = File(filesDir,"test.txt")
 
+    if (!to_read.exists()){
+        return "" }
 
+    var sb:StringBuilder = java.lang.StringBuilder()
+    try {
+        val br:BufferedReader = BufferedReader(FileReader(to_read))
+        var temp: String? = br.readLine()
+        while (temp != null){
+            sb.append(temp)
+            sb.append("\n")
+            temp = br.readLine()
+        }
+        br.close()
+    } catch (e: IOException){
+        e.printStackTrace()
+    }
+    print(sb.toString())
+    return sb.toString()
+}
+
+private fun writeFile(content: String){
+    var to_write = File(filesDir,"test.txt")
+
+    try {
+        var bw:BufferedWriter = BufferedWriter(FileWriter(to_write))
+        bw.write(content)
+        bw.write("another line of content\n")
+        bw.close()
+    }catch (e: IOException){
+        e.printStackTrace()
+    }
+}
+private var text = mutableStateOf("File not present yet")
+var content = mutableStateOf("")
