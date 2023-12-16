@@ -1,5 +1,6 @@
 package com.example.assigment3
 
+import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.hardware.Sensor
@@ -16,24 +17,17 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
-import androidx.core.content.getSystemService
-import android.Manifest
-import androidx.compose.foundation.layout.Row
-import kotlinx.coroutines.flow.internal.NoOpContinuation.context
 import java.io.BufferedReader
-
-import java.io.FileReader
-import java.io.FileWriter
 import java.io.BufferedWriter
 import java.io.File
+import java.io.FileReader
+import java.io.FileWriter
 import java.io.IOException
-import java.lang.StringBuilder
-import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 
 class MainActivity : ComponentActivity() {
@@ -47,9 +41,7 @@ class MainActivity : ComponentActivity() {
                     placePiece(x, y)
                     updateGameStatus()
                 }
-                Text(text = rotation.value)
-                Text(text = "${latitude.value}")
-                Text(text = "${longitude.value}")
+
                 Row {
                     Button(onClick = {
                         if (started_tracking.value) {
@@ -66,16 +58,26 @@ class MainActivity : ComponentActivity() {
                     }
                     if (started_tracking.value){
                         Button(onClick = {
-                            content.value = "Nee kollamalloda"
+                            content.value = readFile()
+
+                            content.value = "${content.value} \n ${latitude.value} ${longitude.value}"
                             writeFile(content.value)
                             text.value= readFile()
 
                         }) {
                             Text(text = "Add Waypoint")
                         }
+                        
+
                     }
+
                 }
-                Text(text = "${text.value}")
+                Button(onClick = { clearFile()
+                    text.value = readFile()
+                }) {
+                    Text(text = "Clear Waypoints")
+                }
+                verticalList(text = text.value, onStateChanged = {}, onLongclick = {})
 
                 val permission_launcher =
                     rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestMultiplePermissions()) {
@@ -170,46 +172,59 @@ class MainActivity : ComponentActivity() {
 
     private var rotation = mutableStateOf("rotation vector: N/A")
     var orientation_vector: FloatArray =  FloatArray(4){0f}
+
+
+    //File
+    private fun readFile(): String {
+        var to_read = File(filesDir,"test.txt")
+
+        if (!to_read.exists()){
+            return "" }
+
+        var sb:StringBuilder = java.lang.StringBuilder()
+        try {
+            val br:BufferedReader = BufferedReader(FileReader(to_read))
+            var temp: String? = br.readLine()
+            while (temp != null){
+                sb.append(temp)
+                sb.append("\n")
+                temp = br.readLine()
+            }
+            br.close()
+        } catch (e: IOException){
+            e.printStackTrace()
+        }
+        print(sb.toString())
+        return sb.toString()
+    }
+
+    private fun writeFile(content: String){
+        var to_write = File(filesDir,"test.txt")
+
+        try {
+            var bw:BufferedWriter = BufferedWriter(FileWriter(to_write))
+            bw.write(content)
+            //bw.write("\n")
+            bw.close()
+        }catch (e: IOException){
+            e.printStackTrace()
+        }
+    }
+    private fun clearFile(){
+        var to_write = File(filesDir,"test.txt")
+
+        try {
+            var bw:BufferedWriter = BufferedWriter(FileWriter(to_write))
+            bw.write("")
+            bw.close()
+        }catch (e: IOException){
+            e.printStackTrace()
+        }
+    }
+    private var text = mutableStateOf("File not present yet")
+    var content = mutableStateOf("")
+
 }
 val array = MutableList(1000) {
     MutableList(1000) { 0 }
 }
-
-//File
-private fun readFile(): String {
-    var to_read = File(filesDir,"test.txt")
-
-    if (!to_read.exists()){
-        return "" }
-
-    var sb:StringBuilder = java.lang.StringBuilder()
-    try {
-        val br:BufferedReader = BufferedReader(FileReader(to_read))
-        var temp: String? = br.readLine()
-        while (temp != null){
-            sb.append(temp)
-            sb.append("\n")
-            temp = br.readLine()
-        }
-        br.close()
-    } catch (e: IOException){
-        e.printStackTrace()
-    }
-    print(sb.toString())
-    return sb.toString()
-}
-
-private fun writeFile(content: String){
-    var to_write = File(filesDir,"test.txt")
-
-    try {
-        var bw:BufferedWriter = BufferedWriter(FileWriter(to_write))
-        bw.write(content)
-        bw.write("another line of content\n")
-        bw.close()
-    }catch (e: IOException){
-        e.printStackTrace()
-    }
-}
-private var text = mutableStateOf("File not present yet")
-var content = mutableStateOf("")

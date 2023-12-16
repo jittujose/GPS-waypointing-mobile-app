@@ -10,7 +10,10 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -179,4 +182,20 @@ fun showWhyNotificationNeeded(onDismiss: () -> Unit){
             }  })
 }
 
-
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun verticalList(text:String, onStateChanged: (Int) -> Unit,onLongclick:(Int) ->Unit ){
+    var data = arrayOf<String>()
+    data= stringToArray(text)
+    LazyColumn {
+        for (i in data){
+            item { 
+                androidx.compose.material3.ListItem(headlineText = {Text(text = "${i}")},
+                supportingText = { })
+            }
+        }
+    }
+}
+fun stringToArray(stringData: String): Array<String> {
+    return stringData.lines().toTypedArray()
+}
