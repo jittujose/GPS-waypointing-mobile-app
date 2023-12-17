@@ -18,8 +18,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
 import java.io.BufferedReader
@@ -72,10 +75,16 @@ class MainActivity : ComponentActivity() {
                     }
 
                 }
-                Button(onClick = { clearFile()
+                Button(onClick = {
+                    showClearDialog.value=true
                     text.value = readFile()
                 }) {
                     Text(text = "Clear Waypoints")
+                }
+                if (showClearDialog.value){
+                    clearDialog {
+                        showClearDialog.value=false
+                    }
                 }
                 verticalList(text = text.value, onStateChanged = {}, onLongclick = {})
 
@@ -173,6 +182,8 @@ class MainActivity : ComponentActivity() {
     private var rotation = mutableStateOf("rotation vector: N/A")
     var orientation_vector: FloatArray =  FloatArray(4){0f}
 
+    var showClearDialog= mutableStateOf(false)
+
 
     //File
     private fun readFile(): String {
@@ -204,13 +215,12 @@ class MainActivity : ComponentActivity() {
         try {
             var bw:BufferedWriter = BufferedWriter(FileWriter(to_write))
             bw.write(content)
-            //bw.write("\n")
             bw.close()
         }catch (e: IOException){
             e.printStackTrace()
         }
     }
-    private fun clearFile(){
+     fun clearFile(){
         var to_write = File(filesDir,"test.txt")
 
         try {
@@ -220,6 +230,22 @@ class MainActivity : ComponentActivity() {
         }catch (e: IOException){
             e.printStackTrace()
         }
+    }
+    @Composable
+    fun clearDialog(onDismiss: () -> Unit){
+        AlertDialog(onDismissRequest = {  },
+            title={Text("Clear File")},
+            text = {Text("Do you want to clear all way points? ")},
+            confirmButton = {
+                TextButton(onClick = {
+                    clearFile()
+                    text.value=readFile()
+                    onDismiss() }) {
+                    Text(text = "Yes")
+                }  },
+            dismissButton = { TextButton(onClick = { onDismiss()}) {
+                Text(text = "No")
+            }})
     }
     private var text = mutableStateOf("File not present yet")
     var content = mutableStateOf("")

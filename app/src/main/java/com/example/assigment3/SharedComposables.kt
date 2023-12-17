@@ -6,12 +6,14 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
@@ -36,6 +38,7 @@ import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import kotlin.math.floor
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -188,12 +191,14 @@ fun showWhyNotificationNeeded(onDismiss: () -> Unit){
 fun verticalList(text:String, onStateChanged: (Int) -> Unit,onLongclick:(Int) ->Unit ){
     var data = arrayOf<String>()
     data= stringToArray(text)
+    var j =1
     LazyColumn {
         for (i in data){
             item { 
-                androidx.compose.material3.ListItem(headlineText = {Text(text = "${i}")},
-                supportingText = { })
+                androidx.compose.material3.ListItem(headlineText = { },
+                supportingText = { Text(text = "${i}")})
             }
+
         }
     }
 }
