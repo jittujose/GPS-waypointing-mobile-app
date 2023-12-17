@@ -73,10 +73,7 @@ fun mapView(game_state: MutableList<MutableList<Int>>,orientation_vector: FloatA
 
 
 //
-        // Convert to radians
-        val rotationXRad = Math.toRadians(orientation_vector[0].toDouble())
-        val rotationYRad = Math.toRadians(orientation_vector[1].toDouble())
-        val rotationZRad = Math.toRadians(orientation_vector[2].toDouble())
+
 
         rotate(degrees = orientation_vector[0]) {
             rotate(degrees = orientation_vector[1]) {
